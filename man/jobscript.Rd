@@ -31,8 +31,16 @@ environment object to create an object with that name.}
   }}
 }
 \value{
-\code{character} the path to the file
+\code{character} the path to the file invisibly
 }
 \description{
 Write the \code{code} provided to a file indicated by \code{filename} in the directory indicated by \code{dir}
+}
+\examples{
+jobscript({
+# long running code
+Sys.sleep(10)
+out <- "I returned"
+}, filename = "ex.R", exportEnv = "R_GlobalEnv")
+file.remove("ex.R")
 }

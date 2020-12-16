@@ -5,9 +5,16 @@
 #' @param dir \code{character} vector of directory path(s)
 #' @inheritParams rstudioapi::jobRunScript
 #' @inheritDotParams rstudioapi::jobRunScript
-#' @return \code{character} the path to the file
+#' @return \code{character} the path to the file invisibly
 #' @importFrom rstudioapi jobRunScript
 #' @importFrom rlang enexpr
+#' @examples
+#' jobscript({
+#' # long running code
+#' Sys.sleep(10)
+#' out <- "I returned"
+#' }, filename = "ex.R", exportEnv = "R_GlobalEnv")
+#' file.remove("ex.R")
 #' @export
 
 
@@ -23,7 +30,7 @@ jobscript <- function(code, filename, dir = NULL, workingDir = getwd(), ...) {
     fp <- tempfile("job", fileext = ".R")
   } else {
     stopifnot(is.character(filename))
-    fp <- file.path(dir, filename)
+    fp <- file.path(ifelse(is.null(dir), "", dir), ifelse(grepl("\\.R$", filename), filename, paste0(filename, ".R")))
   }
   if (!file.exists(fp)) file.create(fp)
 
