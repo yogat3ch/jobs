@@ -1,0 +1,4 @@
+Name: Send clip/code to background task
+Description: Sends code passed to `code` argument or code copied to clipboard to be executied in an rstudio background task
+Binding: jobscript
+Interactive: false

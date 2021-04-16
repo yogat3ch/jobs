@@ -2,19 +2,31 @@
 % Please edit documentation in R/jobs.R
 \name{jobscript}
 \alias{jobscript}
-\title{Write a code chunk to file}
+\title{Run code as RStudio background task}
 \usage{
-jobscript(code, filename, dir = NULL, workingDir = getwd(), ...)
+jobscript(
+  code,
+  filename,
+  dir = NULL,
+  workingDir = getwd(),
+  exportEnv = .GlobalEnv,
+  ...
+)
 }
 \arguments{
-\item{code}{\code{expression} to be written to file. Either one created with \link[rlang]{expr}, or provided wrapped in \code{\{\}}}
+\item{code}{\code{expression} to be written to file. Either one created with \link[rlang]{expr}, or provided wrapped in \code{\{\}}. If no code is provided, the clipboard will be read.}
 
 \item{filename}{\code{character} filename}
 
-\item{dir}{\code{character} vector of directory path(s)}
+\item{dir}{\code{character} vector of directories}
 
 \item{workingDir}{The working directory in which to run the job. When
 \code{NULL} (the default), the parent directory of the R script is used.}
+
+\item{exportEnv}{The name of the environment in which to export the R
+objects created by the job. Use \code{""} (the default) to skip export,
+\code{"R_GlobalEnv"}` to export to the global environment, or the name of an
+environment object to create an object with that name.}
 
 \item{...}{
   Arguments passed on to \code{\link[rstudioapi:jobRunScript]{rstudioapi::jobRunScript}}
@@ -24,17 +36,13 @@ jobscript(code, filename, dir = NULL, workingDir = getwd(), ...)
 the filename of the script is used as the job name.}
     \item{\code{encoding}}{The text encoding of the script, if known.}
     \item{\code{importEnv}}{Whether to import the global environment into the job.}
-    \item{\code{exportEnv}}{The name of the environment in which to export the R
-objects created by the job. Use \code{""} (the default) to skip export,
-\code{"R_GlobalEnv"}` to export to the global environment, or the name of an
-environment object to create an object with that name.}
   }}
 }
 \value{
-\code{character} the path to the file invisibly
+\code{character} the path to the file invisibly and once the task completes, any code results (as would be returned if using the background tasks feature directly)
 }
 \description{
-Write the \code{code} provided to a file indicated by \code{filename} in the directory indicated by \code{dir}
+Write the code provided to \code{code} or copied to the clipboard to a file indicated by \code{filename} in the directory indicated by \code{dir} and run it as a background task in RStudio
 }
 \examples{
 jobscript({
