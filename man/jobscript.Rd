@@ -10,6 +10,7 @@ jobscript(
   dir = NULL,
   workingDir = getwd(),
   exportEnv = .GlobalEnv,
+  importEnv = TRUE,
   ...
 )
 }
@@ -20,22 +21,22 @@ jobscript(
 
 \item{dir}{\code{character} vector of directories}
 
-\item{workingDir}{The working directory in which to run the job. When
-\code{NULL} (the default), the parent directory of the R script is used.}
+\item{workingDir}{The working directory in which to run the job. When \code{NULL} (the default),
+the parent directory of the R script is used.}
 
-\item{exportEnv}{The name of the environment in which to export the R
-objects created by the job. Use \code{""} (the default) to skip export,
-\code{"R_GlobalEnv"}` to export to the global environment, or the name of an
-environment object to create an object with that name.}
+\item{exportEnv}{The name of the environment in which to export the R objects created by the
+job. Use \code{""} (the default) to skip export, \code{"R_GlobalEnv"}` to export to the
+global environment, or the name of an environment object to create an object with that name.}
+
+\item{importEnv}{Whether to import the global environment into the job.}
 
 \item{...}{
   Arguments passed on to \code{\link[rstudioapi:jobRunScript]{rstudioapi::jobRunScript}}
   \describe{
     \item{\code{path}}{The path to the R script to be run.}
-    \item{\code{name}}{A name for the background job. When \code{NULL} (the default),
-the filename of the script is used as the job name.}
+    \item{\code{name}}{A name for the background job. When \code{NULL} (the default), the filename of the
+script is used as the job name.}
     \item{\code{encoding}}{The text encoding of the script, if known.}
-    \item{\code{importEnv}}{Whether to import the global environment into the job.}
   }}
 }
 \value{

@@ -19,13 +19,14 @@
 #' @export
 
 
-jobscript <- function(code, filename, dir = NULL, workingDir = getwd(), exportEnv = .GlobalEnv, ...) {
+jobscript <- function(code, filename, dir = NULL, workingDir = getwd(), exportEnv = .GlobalEnv, importEnv = TRUE, ...) {
   if (missing(code)) {
     code <- clipr::read_clip()
   } else {
     # Check to see if it's an expression
-    .code <- rlang::enexpr(code)
-    if ("{" == deparse(.code[[1]])) code <- deparse(.code)
+    code <- deparse(rlang::enexpr(code))
+    if (code[1] == "{")
+      code <- code[-c(1, length(code))]
   }
 
   if (!is.null(dir)) {
@@ -51,7 +52,18 @@ jobscript <- function(code, filename, dir = NULL, workingDir = getwd(), exportEn
   if (!file.exists(fp)) file.create(fp)
 
   write(code, fp)
-  rstudioapi::jobRunScript(fp, name = basename(fp), workingDir = workingDir, ...)
+  rstudioapi::jobRunScript(fp, workingDir = workingDir, importEnv = importEnv, exportEnv = exportEnv, ...)
   invisible(fp)
+}
+
+#' @title Install all packages on clipboard
+#' @description install all packages in the package list rendered by \link[devtools]{install_github} on the clipboard
+#' @export
+
+install_all <- function() {
+  pkgs <- clipr::read_clip()
+  pkgs <- stringr::str_extract(pkgs, "(?<=\\d{1,2}\\:\\s)[\\w\\.]+")
+  exp <- rlang::expr(install.packages(!!dput(pkgs)))
+  rlang::eval_bare(rlang::call2(jobs::jobscript, !!!list(exp)))
 }
 
