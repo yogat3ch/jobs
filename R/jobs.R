@@ -5,10 +5,7 @@
 #' @param dir \code{character} vector of directories
 #' @inheritParams rstudioapi::jobRunScript
 #' @inheritDotParams rstudioapi::jobRunScript
-#' @return \code{character} the path to the file invisibly and once the task completes, any code results (as would be returned if using the background tasks feature directly)
-#' @importFrom clipr read_clip
-#' @importFrom rstudioapi jobRunScript
-#' @importFrom rlang enexpr
+#' @return \code{character} the path to the file invisibly and once the task completes, any code results (as would be returned if using the background tasks feature directly
 #' @examples
 #' jobscript({
 #' # long running code
@@ -19,7 +16,7 @@
 #' @export
 
 
-jobscript <- function(code, filename, dir = NULL, workingDir = getwd(), exportEnv = .GlobalEnv, importEnv = TRUE, ...) {
+jobscript <- function(code, filename, dir = NULL, workingDir = getwd(), exportEnv = "", importEnv = TRUE, ...) {
   if (missing(code)) {
     code <- clipr::read_clip()
   } else {
@@ -60,9 +57,11 @@ jobscript <- function(code, filename, dir = NULL, workingDir = getwd(), exportEn
 #' @description install all packages in the package list rendered by \link[devtools]{install_github} on the clipboard
 #' @export
 
-install_all <- function() {
-  pkgs <- clipr::read_clip()
-  pkgs <- stringr::str_extract(pkgs, "(?<=\\d{1,2}\\:\\s)[\\w\\.]+")
+install_all <- function(pkgs) {
+  if (missing(pkgs)) {
+    pkgs <- clipr::read_clip()
+    pkgs <- stringr::str_extract(pkgs, "[\\w\\.]+(?=\\s+\\(\\d\\.)")
+  }
   exp <- rlang::expr(install.packages(!!dput(pkgs)))
   rlang::eval_bare(rlang::call2(jobs::jobscript, !!!list(exp)))
 }
