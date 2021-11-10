@@ -57,11 +57,11 @@ jobscript <- function(code, filename, dir = NULL, workingDir = getwd(), exportEn
 #' @description install all packages in the package list rendered by \link[devtools]{install_github} on the clipboard
 #' @export
 
-install_all <- function(pkgs) {
-  if (missing(pkgs)) {
+install_all <- function(pkgs, extract = TRUE) {
+  if (missing(pkgs)) 
     pkgs <- clipr::read_clip()
+  if (extract)
     pkgs <- stringr::str_extract(pkgs, "[\\w\\.]+(?=\\s+\\(\\d\\.)")
-  }
   exp <- rlang::expr(install.packages(!!dput(pkgs)))
   rlang::eval_bare(rlang::call2(jobs::jobscript, !!!list(exp)))
 }
